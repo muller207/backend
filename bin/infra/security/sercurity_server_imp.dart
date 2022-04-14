@@ -48,13 +48,17 @@ class SecurityServerImp implements SecurityService<JWT> {
             jwt = await validateJWT(token);
           }
         }
-        req.change(context: {'jwt': jwt});
-        return handler(req);
+        var request = req.change(context: {'jwt': jwt});
+        return handler(request);
       };
     };
   }
 
   @override
-  // TODO: implement verifyJwt
-  Middleware get verifyJwt => throw UnimplementedError();
+  Middleware get verifyJwt => createMiddleware(requestHandler: (Request req) {
+        if (req.context['jwt'] == null) {
+          return Response.forbidden('{"error":"Not Authorized"}');
+        }
+        return null;
+      });
 }

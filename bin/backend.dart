@@ -20,11 +20,12 @@ void main() async {
       .addMiddleware(logRequests())
       .addMiddleware(MiddlewareInterception().middleware)
       .addMiddleware(SecurityServerImp().authorization)
+      .addMiddleware(SecurityServerImp().verifyJwt)
       .addHandler(cascadeHandler);
 
   await CustomServer().initializate(
     handler: handler,
-    address: 'localhost', //await CustomEnv.get<String>(key: 'server_address'),
+    address: await CustomEnv.get<String>(key: 'server_address'),
     port: await CustomEnv.get<int>(key: 'server_port'),
   );
 }
