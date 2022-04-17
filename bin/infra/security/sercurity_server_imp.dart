@@ -3,7 +3,6 @@ import 'package:shelf/shelf.dart';
 
 import '../../utils/custom_env.dart';
 import 'security_server.dart';
-import 'validade/api_router_validade.dart';
 
 class SecurityServerImp implements SecurityService<JWT> {
   @override
@@ -56,10 +55,6 @@ class SecurityServerImp implements SecurityService<JWT> {
 
   @override
   Middleware get verifyJwt => createMiddleware(requestHandler: (Request req) {
-        var _securityApi = ApiRouterValidate().add('login').add('register');
-
-        if (_securityApi.isPublic(req.url.path)) return null;
-
         if (req.context['jwt'] == null) {
           return Response.forbidden('{"error":"Not Authorized"}');
         }
