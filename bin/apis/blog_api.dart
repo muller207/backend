@@ -12,7 +12,10 @@ class BlogApi extends Api {
   BlogApi(this._service);
 
   @override
-  Handler getHandler({List<Middleware>? middlewares}) {
+  Handler getHandler({
+    List<Middleware>? middlewares,
+    bool isSecure = false,
+  }) {
     Router router = Router();
 
     //get the list of all news
@@ -51,6 +54,7 @@ class BlogApi extends Api {
     return createHandler(
       router: router,
       middlewares: middlewares,
+      isSecure: isSecure,
     );
   }
 }
