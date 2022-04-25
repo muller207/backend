@@ -1,3 +1,4 @@
+import 'package:mysql1/mysql1.dart';
 import 'package:shelf/shelf.dart';
 
 import 'apis/blog_api.dart';
@@ -9,6 +10,17 @@ import 'utils/custom_env.dart';
 
 void main() async {
   //CustomEnv.fromFile('.env-dev');
+
+  final conn = await MySqlConnection.connect(ConnectionSettings(
+    host: 'localhost', // await CustomEnv.get<String>(key: 'db_host'),
+    port: await CustomEnv.get<int>(key: 'db_port'),
+    user: 'dart_user', //await CustomEnv.get<String>(key: 'db_user'),
+    password: 'dart_pass', //await CustomEnv.get<String>(key: 'db_pass'),
+    db: await CustomEnv.get<String>(key: 'db_schema'),
+  ));
+
+  var result = await conn.query('SELECT * FROM users');
+  print(result);
 
   final di = Injects.initialize();
 

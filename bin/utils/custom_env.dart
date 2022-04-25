@@ -7,22 +7,19 @@ class CustomEnv {
 
   CustomEnv._();
 
-  factory CustomEnv.fromFile(String file){
+  factory CustomEnv.fromFile(String file) {
     _file = file;
     return CustomEnv._();
   }
 
   static Future<T> get<T>({required String key}) async {
-    if(_map.isEmpty) await _load();
+    if (_map.isEmpty) await _load();
     return _map[key]!.toType(T);
   }
 
   static Future<void> _load() async {
     List<String> lines = (await _readFile()).split('\n');
-    _map = {
-      for (String l in lines) 
-        l.split('=')[0] : l.split('=')[1]      
-    };
+    _map = {for (var l in lines) l.split('=')[0]: l.split('=')[1]};
   }
 
   static Future<String> _readFile() async {
