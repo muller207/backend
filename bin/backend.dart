@@ -1,13 +1,12 @@
-import 'package:mysql1/mysql1.dart';
 import 'package:shelf/shelf.dart';
 
 import 'apis/blog_api.dart';
 import 'apis/login_api.dart';
+import 'dao/user_dao.dart';
 import 'infra/custom_server.dart';
 import 'infra/database/db_configuration.dart';
 import 'infra/dependency_injector/injects.dart';
 import 'infra/middleware_interception.dart';
-import 'models/user_model.dart';
 import 'utils/custom_env.dart';
 
 void main() async {
@@ -15,12 +14,8 @@ void main() async {
 
   final _di = Injects.initialize();
 
-  final conn = await _di<DBConfiguration>().connection;
-  var result = await conn.query('SELECT * FROM users');
-  for (ResultRow r in result) {
-    UserModel user = UserModel.fromMap(r.fields);
-    print(user.toString());
-  }
+  UserDAO _userDAO = UserDAO(_di<DBConfiguration>());
+  print(await _userDAO.findOne(1));
 
   var cascadeHandler = Cascade()
       .add(_di.get<LoginApi>().getHandler())
