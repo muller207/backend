@@ -1,6 +1,7 @@
-import '../../apis/blog_api.dart';
+import '../../apis/news_api.dart';
 import '../../apis/login_api.dart';
 import '../../apis/user_api.dart';
+import '../../dao/news_dao.dart';
 import '../../dao/user_dao.dart';
 import '../../models/news_model.dart';
 import '../../services/generic_service.dart';
@@ -21,8 +22,9 @@ class Injects {
 
     di.register<SecurityService>(() => SecurityServerImp());
 
-    di.register<GenericService<NewsModel>>(() => NewsService());
-    di.register<BlogApi>(() => BlogApi(di<GenericService<NewsModel>>()));
+    di.register<NewsDAO>(() => NewsDAO(di<DBConfiguration>()));
+    di.register<GenericService<NewsModel>>(() => NewsService(di<NewsDAO>()));
+    di.register<NewsApi>(() => NewsApi(di<GenericService<NewsModel>>()));
 
     di.register<UserDAO>(() => UserDAO(di<DBConfiguration>()));
     di.register<UserService>(() => UserService(di<UserDAO>()));

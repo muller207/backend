@@ -38,6 +38,34 @@ class UserModel {
       ..password = map['password'];
   }
 
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
+
+    if (id != null) {
+      result.addAll({'id': id});
+    }
+    if (name != null) {
+      result.addAll({'name': name});
+    }
+    if (email != null) {
+      result.addAll({'email': email});
+    }
+    if (password != null) {
+      result.addAll({'password': password});
+    }
+    if (isActive != null) {
+      result.addAll({'isActive': isActive});
+    }
+    if (dtCreation != null) {
+      result.addAll({'dtCreation': dtCreation!.millisecondsSinceEpoch});
+    }
+    if (dtUpdate != null) {
+      result.addAll({'dtUpdate': dtUpdate!.millisecondsSinceEpoch});
+    }
+
+    return result;
+  }
+
   @override
   String toString() {
     return 'UserModel(id: $id, name: $name, email: $email, isActive: $isActive, dtCreation: $dtCreation, dtUpdate: $dtUpdate)';

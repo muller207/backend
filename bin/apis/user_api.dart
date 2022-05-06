@@ -24,7 +24,10 @@ class UserApi extends Api {
       if (body.isEmpty) return Response(400, body: '{"error": "bad format"}');
       UserModel _user = UserModel.fromRequest(jsonDecode(body));
       var result = await _service.save(_user);
-      return result ? Response(201) : Response(500);
+      _user.password = null;
+      return result
+          ? Response(201, body: jsonEncode(_user.toMap()))
+          : Response(500);
     });
 
     return createHandler(

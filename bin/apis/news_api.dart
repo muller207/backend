@@ -7,9 +7,9 @@ import '../models/news_model.dart';
 import '../services/generic_service.dart';
 import 'api.dart';
 
-class BlogApi extends Api {
+class NewsApi extends Api {
   final GenericService<NewsModel> _service;
-  BlogApi(this._service);
+  NewsApi(this._service);
 
   @override
   Handler getHandler({
@@ -19,7 +19,7 @@ class BlogApi extends Api {
     Router router = Router();
 
     //get the list of all news
-    router.get('/blog/news', (Request req) async {
+    router.get('/news/all', (Request req) async {
       List<NewsModel> news = await _service.findAll();
       List<Map> newsMap = news.map((e) => e.toMap()).toList();
       return Response.ok(
@@ -27,28 +27,38 @@ class BlogApi extends Api {
       );
     });
 
+    //get news by id
+    router.get('/news', (Request req) async {
+      String? id = req.url.queryParameters['id'];
+      if (id == null) return Response.badRequest(body: 'id is expected');
+      NewsModel? news = await _service.findOne(int.parse(id));
+      return news == null
+          ? Response.badRequest(body: '{"error":"user not found"}')
+          : Response.ok(news.toJson());
+    });
+
     //create new news
-    router.post('/blog/news', (Request req) async {
+    router.post('/news', (Request req) async {
       NewsModel model = NewsModel.fromJson(await req.readAsString());
-      _service.save(model);
-      return Response(201, body: model.toJson());
+      var result = await _service.save(model);
+      return result ? Response(201, body: model.toJson()) : Response(500);
     });
 
     //update news
-    router.put('/blog/news', (Request req) async {
+    router.put('/news', (Request req) async {
       //String? id = req.url.queryParameters['id'];
       //if (id == null) return Response.badRequest(body: 'id is expected');
       NewsModel model = NewsModel.fromJson(await req.readAsString());
-      _service.save(model);
-      return Response.ok(model.toJson());
+      var result = await _service.save(model);
+      return result ? Response.ok(model.toJson()) : Response(500);
     });
 
     //delete news by id
-    router.delete('/blog/news', (Request req) {
+    router.delete('/news', (Request req) async {
       String? id = req.url.queryParameters['id'];
       if (id == null) return Response.badRequest(body: 'id is expected');
-      _service.delete(int.parse(id));
-      return Response.ok('news removed');
+      var result = await _service.delete(int.parse(id));
+      return result ? Response.ok('news removed') : Response(500);
     });
 
     return createHandler(

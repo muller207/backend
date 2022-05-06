@@ -1,25 +1,28 @@
 import 'dart:convert';
 
 class NewsModel {
-  final int? id;
-  final String title;
-  final String description;
-  final String image;
-  final DateTime publicationDate;
-  final DateTime? updateDate;
+  int? id;
+  String? title;
+  String? description;
+  DateTime? publicationDate;
+  DateTime? updateDate;
+  int? userId;
 
-  NewsModel(
-    this.id,
-    this.title,
-    this.description,
-    this.image,
-    this.publicationDate,
-    this.updateDate,
-  );
+  NewsModel();
+
+  /*factory NewsModel.fromMap(Map<String, dynamic> map) {
+    return NewsModel()
+      ..id = map['id']
+      ..title = map['title']
+      ..description = map['description']
+      ..publicationDate = map['dt_creation']
+      ..updateDate = map['dt_update']
+      ..userId = map['id_user'];
+  }*/
 
   @override
   String toString() {
-    return 'NewsModel(id: $id, title: $title, description: $description, image: $image, publicationDate: $publicationDate, updateDate: $updateDate)';
+    return 'NewsModel(id: $id, title: $title, description: $description, publicationDate: $publicationDate, updateDate: $updateDate)';
   }
 
   Map<String, dynamic> toMap() {
@@ -28,28 +31,38 @@ class NewsModel {
     if (id != null) {
       result.addAll({'id': id});
     }
-    result.addAll({'title': title});
-    result.addAll({'description': description});
-    result.addAll({'image': image});
-    result.addAll({'publicationDate': publicationDate.millisecondsSinceEpoch});
+    if (title != null) {
+      result.addAll({'title': title});
+    }
+    if (description != null) {
+      result.addAll({'description': description});
+    }
+    if (publicationDate != null) {
+      result
+          .addAll({'publicationDate': publicationDate!.millisecondsSinceEpoch});
+    }
     if (updateDate != null) {
       result.addAll({'updateDate': updateDate!.millisecondsSinceEpoch});
+    }
+    if (userId != null) {
+      result.addAll({'userId': userId});
     }
 
     return result;
   }
 
   factory NewsModel.fromMap(Map<String, dynamic> map) {
-    return NewsModel(
-      map['id']?.toInt(),
-      map['title'] ?? '',
-      map['description'] ?? '',
-      map['image'] ?? '',
-      DateTime.fromMillisecondsSinceEpoch(map['publicationDate']),
-      map['updateDate'] != null
+    return NewsModel()
+      ..id = map['id']?.toInt()
+      ..title = map['title']
+      ..description = map['description'].toString()
+      ..publicationDate = map['publicationDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['publicationDate'])
+          : null
+      ..updateDate = map['updateDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['updateDate'])
-          : null,
-    );
+          : null
+      ..userId = map['userId']?.toInt();
   }
 
   String toJson() => json.encode(toMap());
