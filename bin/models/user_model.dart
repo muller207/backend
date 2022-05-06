@@ -1,3 +1,5 @@
+import 'package:password_dart/password_dart.dart';
+
 class UserModel {
   int? id;
   String? name;
@@ -23,8 +25,21 @@ class UserModel {
     );
   }
 
+  factory UserModel.fromRequest(Map<String, dynamic> map) {
+    return UserModel()
+      ..name = map['name']
+      ..email = map['email']
+      ..password = Password.hash(map['password'], PBKDF2());
+  }
+
+  factory UserModel.fromEmail(Map<String, dynamic> map) {
+    return UserModel()
+      ..id = map['id']?.toInt()
+      ..password = map['password'];
+  }
+
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, isActive: $isActive, dtCreation: $dtCreation, dtupdate: $dtUpdate)';
+    return 'UserModel(id: $id, name: $name, email: $email, isActive: $isActive, dtCreation: $dtCreation, dtUpdate: $dtUpdate)';
   }
 }

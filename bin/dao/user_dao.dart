@@ -1,5 +1,3 @@
-import 'package:mysql1/mysql1.dart';
-
 import '../infra/database/db_configuration.dart';
 import '../models/user_model.dart';
 import 'dao.dart';
@@ -53,5 +51,14 @@ class UserDAO implements DAO<UserModel> {
   _execQuery(String sql, [List? params]) async {
     var conn = await _dbConfiguration.connection;
     return await conn.query(sql, params);
+  }
+
+  //find user by email for login purpose
+  Future<UserModel?> findOneByEmail(String email) async {
+    var result =
+        await _execQuery('SELECT * FROM users WHERE email = ?', [email]);
+    return result.affectedRows == 0
+        ? null
+        : UserModel.fromEmail(result.first.fields);
   }
 }
